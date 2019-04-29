@@ -126,7 +126,19 @@ def dashboard():
         categories = session.query(Category).all()
         orders = session.query(Order).all()
         products = session.query(Product).all()
-        return render_template('admin_dashboard.html',category_form=category_form,categories=categories,orders=orders, products=products)
+
+        all_products = []
+        for product in products:
+            single_product = {}
+            print(product.Seller)
+            seller = session.query(Users).filter_by(ID=product.Seller).first()
+            seller_name = seller.FullName
+            print(seller.FullName)
+            single_product = {'seller' : seller_name,'product_id' : product.ID,'product_name' : product.ProductName, 'product_description': product.ProductDescription, 'product_price' : product.Price }
+            print(single_product)
+            all_products.append(single_product)
+
+        return render_template('admin_dashboard.html',category_form=category_form,categories=categories,orders=orders, all_products=all_products)
     else:
         flash('Access Denied')
         return url_for('home')
@@ -230,7 +242,20 @@ def home():
     # Find categories form database
     categories = session.query(Category).all()
     products = session.query(Product).all()
-    return render_template('index.html', categories=categories, products=products)
+    all_products = []
+    for product in products:
+        single_product = {}
+        print(product.Seller)
+        seller = session.query(Users).filter_by(ID=product.Seller).first()
+        seller_name = seller.FullName
+        print(seller.FullName)
+        single_product = {'seller' : seller_name,'product_id' : product.ID,'product_name' : product.ProductName, 'product_description': product.ProductDescription, 'product_price' : product.Price }
+        print(single_product)
+        all_products.append(single_product)
+
+    return render_template('index.html', categories=categories, all_products=all_products)
+
+
 
 
 ##################################
